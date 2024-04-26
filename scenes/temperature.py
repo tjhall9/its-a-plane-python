@@ -4,6 +4,7 @@ from rgbmatrix import graphics
 from utilities.animator import Animator
 from setup import colours, fonts, frames
 from config import TEMPERATURE_LOCATION
+from config import DEBUG_TEMP
 
 # Attempt to load config data
 try:
@@ -129,6 +130,7 @@ class TemperatureScene(object):
 
         if self.current_temperature:
             temp_str = f"{round(self.current_temperature)}°".rjust(4, " ")
+            self.current_temperature = DEBUG_TEMP
 
             if self.current_temperature > TEMPERATURE_MID:
                 if self.current_temperature > TEMPERATURE_MAX:
@@ -137,8 +139,10 @@ class TemperatureScene(object):
                     ratio = (self.current_temperature - TEMPERATURE_MID) / TEMPERATURE_MAX
 
                 temp_colour = self.colour_gradient(
-                    TEMPERATURE_MID_COLOUR, TEMPERATURE_MAX_COLOUR, ratio
-                )
+                    #TEMPERATURE_MID_COLOUR, TEMPERATURE_MAX_COLOUR, ratio
+                    TEMPERATURE_MAX_COLOUR, TEMPERATURE_MID_COLOUR, ratio)
+                print("temp > mid, ratio=" + str(ratio))
+
             else:
                 if self.current_temperature > TEMPERATURE_MIN:
                     ratio = (self.current_temperature - TEMPERATURE_MIN) / TEMPERATURE_MID
@@ -146,8 +150,8 @@ class TemperatureScene(object):
                     ratio = 0
 
                 temp_colour = self.colour_gradient(
-                    TEMPERATURE_MIN_COLOUR, TEMPERATURE_MID_COLOUR, ratio
-                )
+                    TEMPERATURE_MIN_COLOUR, TEMPERATURE_MID_COLOUR, ratio)
+                print("temp < mid, ratio=" + str(ratio))
             # Draw temperature
             _ = graphics.DrawText(
                 self.canvas,
