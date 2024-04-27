@@ -48,23 +48,23 @@ OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5/"
 RAINFALL_REFRESH_SECONDS = 300
 RAINFALL_HOURS = 24
 RAINFAILL_12HR_MARKERS = True
-RAINFALL_GRAPH_ORIGIN = (39, 15)
+RAINFALL_GRAPH_ORIGIN = (23, 30)
 RAINFALL_COLUMN_WIDTH = 1
 RAINFALL_GRAPH_HEIGHT = 8
-RAINFALL_MAX_VALUE = 3  # mm
+RAINFALL_MAX_VALUE = 12  # mm
 RAINFALL_OVERSPILL_FLASH_ENABLED = True
 
 TEMPERATURE_REFRESH_SECONDS = 60
-TEMPERATURE_FONT = fonts.extrasmall
-TEMPERATURE_FONT_HEIGHT = 5
-TEMPERATURE_POSITION = (48, TEMPERATURE_FONT_HEIGHT + 1)
+TEMPERATURE_FONT = fonts.large
+TEMPERATURE_FONT_HEIGHT = 7
+TEMPERATURE_POSITION = (40, 31)
 
 TEMPERATURE_COLOURS = (
-    (0, colours.WHITE),
-    (1, colours.BLUE_LIGHT),
-    (8, colours.PINK_DARK),
-    (18, colours.YELLOW),
-    (30, colours.ORANGE),
+    (10, colours.WHITE),    # 50F
+    (15, colours.DARK_CYAN),     # 60F
+    (21, colours.DARK_GREEN),    # 70F
+    (26, colours.YELLOW_DARK),   # 80F
+    (30, colours.ORANGE),      # 90F
 )
 
 # Cache grabbing weather data
@@ -322,6 +322,14 @@ class WeatherScene(object):
                 colours.BLACK,
                 self._last_temperature_str,
             )
+            _ = graphics.DrawText(
+                self.canvas,
+                TEMPERATURE_FONT,
+                TEMPERATURE_POSITION[0]-1,
+                TEMPERATURE_POSITION[1]-1,
+                colours.BLACK,
+                self._last_temperature_str,
+            )
 
         if self.current_temperature:
             temp_str = f"{round(self.current_temperature)}°".rjust(4, " ")
@@ -335,6 +343,14 @@ class WeatherScene(object):
                 TEMPERATURE_POSITION[0],
                 TEMPERATURE_POSITION[1],
                 temp_colour,
+                temp_str,
+            )
+            _ = graphics.DrawText(
+                self.canvas,
+                TEMPERATURE_FONT,
+                TEMPERATURE_POSITION[0]-1,
+                TEMPERATURE_POSITION[1]-1,
+                colours.DARK_GRAY,
                 temp_str,
             )
 

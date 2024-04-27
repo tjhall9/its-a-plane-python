@@ -6,10 +6,10 @@ from setup import colours, fonts, frames
 from rgbmatrix import graphics
 
 # Setup
-CLOCK_FONT = fonts.regular
-CLOCK_POSITION = (1, 8)
-CLOCK_COLOUR = colours.BLUE_DARK
-
+CLOCK_FONT = fonts.large_bold
+CLOCK_POSITION = (1, 11)
+CLOCK_COLOUR = colours.WHITE
+DROP_SHADOW_COLOUR = colours.BLUE
 
 class ClockScene(object):
     def __init__(self):
@@ -40,8 +40,26 @@ class ClockScene(object):
                         colours.BLACK,
                         self._last_time,
                     )
+                    _ = graphics.DrawText(
+                        self.canvas,
+                        CLOCK_FONT,
+                        CLOCK_POSITION[0]-1,
+                        CLOCK_POSITION[1]-1,
+                        colours.BLACK,
+                        self._last_time,
+                    )
                 self._last_time = current_time
 
+
+                # drop shadow
+                _ = graphics.DrawText(
+                    self.canvas,
+                    CLOCK_FONT,
+                    CLOCK_POSITION[0]-1,
+                    CLOCK_POSITION[1]-1,
+                    DROP_SHADOW_COLOUR,
+                    current_time,
+                )
                 # Draw Time
                 _ = graphics.DrawText(
                     self.canvas,
