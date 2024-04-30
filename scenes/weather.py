@@ -48,23 +48,23 @@ OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5/"
 RAINFALL_REFRESH_SECONDS = 300
 RAINFALL_HOURS = 24
 RAINFAILL_12HR_MARKERS = True
-RAINFALL_GRAPH_ORIGIN = (39, 15)
+RAINFALL_GRAPH_ORIGIN = (23, 30)
 RAINFALL_COLUMN_WIDTH = 1
 RAINFALL_GRAPH_HEIGHT = 8
-RAINFALL_MAX_VALUE = 3  # mm
+RAINFALL_MAX_VALUE = 12  # mm
 RAINFALL_OVERSPILL_FLASH_ENABLED = True
 
 TEMPERATURE_REFRESH_SECONDS = 60
-TEMPERATURE_FONT = fonts.extrasmall
-TEMPERATURE_FONT_HEIGHT = 5
-TEMPERATURE_POSITION = (48, TEMPERATURE_FONT_HEIGHT + 1)
+TEMPERATURE_FONT = fonts.large
+TEMPERATURE_FONT_HEIGHT = 7
+TEMPERATURE_POSITION = (40, 31)
 
 TEMPERATURE_COLOURS = (
-    (0, colours.WHITE),
-    (1, colours.BLUE_LIGHT),
-    (8, colours.PINK_DARK),
-    (18, colours.YELLOW),
-    (30, colours.ORANGE),
+    (50, colours.GREY),    # 50F
+    (60, colours.DARK_CYAN),     # 60F
+    (70, colours.DARK_GREEN),    # 70F
+    (80, colours.YELLOW_DARK),   # 80F
+    (90, colours.ORANGE),      # 90F
 )
 
 # Cache grabbing weather data
@@ -163,6 +163,9 @@ class WeatherScene(object):
         self._last_temperature = None
         self._last_temperature_str = None
 
+    def celcius_to_f(self, temp):
+        return ((9/5)*temp+32)
+
     def colour_gradient(self, colour_A, colour_B, ratio):
         return graphics.Color(
             colour_A.red + ((colour_B.red - colour_A.red) * ratio),
@@ -180,6 +183,7 @@ class WeatherScene(object):
         # Search to find where in the current
         # temperature lies within the
         # defined colours
+
         for i in range(1, len(TEMPERATURE_COLOURS) - 1):
             if current_temperature > TEMPERATURE_COLOURS[i][0]:
                 min_temp = TEMPERATURE_COLOURS[i][0]
@@ -193,9 +197,7 @@ class WeatherScene(object):
             ratio = (current_temperature - min_temp) / max_temp
         else:
             ratio = 0
-
         temp_colour = self.colour_gradient(min_temp_colour, max_temp_colour, ratio)
-
         return temp_colour
 
     def draw_rainfall_and_temperature(
@@ -238,7 +240,10 @@ class WeatherScene(object):
             y2 = RAINFALL_GRAPH_ORIGIN[1] - rain_height
 
             if graph_colour is None:
-                square_colour = self.temperature_to_colour(data["temp_c"])
+                if TEMPERATURE_UNITS != "METRIC":
+                    square_colour = self.temperature_to_colour(self.celcius_to_f(data["temp_c"]))
+                else:
+                    square_colour = self.temperature_to_colour(data["temp_c"])
             else:
                 flash_height = 0
                 square_colour = graph_colour
